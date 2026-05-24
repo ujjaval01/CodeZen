@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String       @id @default(cuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  role         String       @default("USER") // USER, ADMIN
+  xp           Int          @default(0)
+  level        Int          @default(1)
+  streak       Int          @default(0)
+  lastActive   DateTime     @default(now())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  submissions  Submission[]
+  discussions  Discussion[]
+  notes        Note[]
+}
+
+model Problem {
+  id              String       @id @default(cuid())
+  title           String
+  slug            String       @unique
+  difficulty      String       // EASY, MEDIUM, HARD
+  category        String       @default("DSA") // DSA, SQL, etc.
+  statement       String       // Markdown
+  constraints     String       // Markdown
+  examplesJson    String       // JSON string of arrays of input/output
+  hintsJson       String       // JSON string of string arrays
+  editorial       String       // Markdown
+  timeComplexity  String
+  spaceComplexity String
+  companiesJson   String       // JSON string of string arrays
+  tagsJson        String       // JSON string of string arrays
+  acceptanceRate  Float        @default(0.0)
+  premium         Boolean      @default(false)
+  orderIndex      Int          @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  testCases       TestCase[]
+  submissions     Submission[]
+  discussions     Discussion[]
+  notes           Note[]
+}
+
+model TestCase {
+  id             String   @id @default(cuid())
+  problemId      String
+  problem        Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  input          String
+  expectedOutput String
+  isSample       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
+
+model Submission {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problemId     String
+  problem       Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  code          String
+  language      String
+  status        String   // PENDING, ACCEPTED, WRONG_ANSWER, TIME_LIMIT_EXCEEDED, RUNTIME_ERROR, COMPILE_ERROR
+  executionTime Int      // in ms
+  memoryUsage   Int      // in KB
+  error         String?
+  createdAt     DateTime @default(now())
+}
+
+model Contest {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  startTime     DateTime
+  endTime       DateTime
+  problemsJson  String   // JSON array of problem IDs
+  standingsJson String   @default("[]") // JSON string of standings
+  createdAt     DateTime @default(now())
+}
+
+model Badge {
+  id             String   @id @default(cuid())
+  name           String
+  description    String
+  icon           String   // Lucide icon key name
+  conditionType  String   // XP, PROBLEMS_SOLVED, STREAK, CONTEST_RATING
+  conditionValue Int
+  createdAt      DateTime @default(now())
+}
+
+model Discussion {
+  id        String       @id @default(cuid())
+  problemId String
+  problem   Problem      @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String?      // Nullable for replies
+  content   String
+  createdAt DateTime     @default(now())
+  parentId  String?
+  parent    Discussion?  @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Discussion[] @relation("Replies")
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, problemId])
+}
