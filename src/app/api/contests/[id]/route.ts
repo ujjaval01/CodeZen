@@ -20,7 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       console.error("Failed to parse contest problemsJson");
     }
 
-    let problems = [];
+    let problems: any[] = [];
     if (problemIds.length > 0) {
       problems = await prisma.problem.findMany({
         where: { id: { in: problemIds } },
