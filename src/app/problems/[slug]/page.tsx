@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import Editor from "@monaco-editor/react";
 import {
   Terminal, Play, Upload, Code, BookOpen, MessageSquare, Notebook, Sparkles,
-  ChevronDown, Maximize2, Minimize2, CheckCircle2, XCircle, AlertTriangle, Loader2, Save, Trophy, ShieldAlert
+  ChevronDown, Maximize2, Minimize2, CheckCircle2, XCircle, AlertTriangle, Loader2, Save, Trophy
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -315,7 +315,7 @@ function WorkspaceContent() {
     return (
       <div className="flex-1 w-full bg-[#09090b] flex flex-col items-center justify-center text-center p-8 min-h-[calc(100vh-4rem)] relative z-10">
         <div className="inline-flex items-center justify-center p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-3xl mb-6">
-          <ShieldAlert className="h-12 w-12 text-indigo-400" />
+          <AlertTriangle className="h-12 w-12 text-indigo-400" />
         </div>
         <h2 className="text-3xl font-extrabold text-white mb-4">Premium Problem</h2>
         <p className="text-zinc-400 max-w-md mb-8">
