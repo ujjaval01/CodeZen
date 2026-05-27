@@ -1,10 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import "dotenv/config";
 import bcrypt from "bcryptjs";
-
-// Instantiate prisma client directly for the standalone seed script
-const adapter = new PrismaBetterSqlite3({ url: "file:dev.db" });
-const prisma = new PrismaClient({ adapter });
+import { prisma } from "../src/lib/prisma";
 
 async function main() {
   console.log("Seeding started...");
