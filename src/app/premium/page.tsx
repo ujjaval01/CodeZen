@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 
 export default function PremiumPage() {
-  const { user, fetchUser } = useAuth();
+  const { user, refreshUser } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -59,7 +59,7 @@ export default function PremiumPage() {
           const verifyData = await verifyRes.json();
           if (verifyRes.ok) {
             alert("Payment Successful! Welcome to Premium.");
-            await fetchUser(); // refresh user state to update isPremium
+            await refreshUser(); // refresh user state to update isPremium
             router.push("/dashboard");
           } else {
             alert("Payment verification failed. Please contact support.");
