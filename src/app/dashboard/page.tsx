@@ -90,11 +90,7 @@ function DashboardContent() {
 
   useEffect(() => {
     if (!authLoading) {
-      if (!user) {
-        router.push("/login");
-      } else {
-        fetchDashboardData();
-      }
+      fetchDashboardData();
     }
   }, [user, authLoading]);
 
@@ -478,14 +474,8 @@ function DashboardContent() {
   );
 }
 
+import { redirect } from "next/navigation";
+
 export default function DashboardPage() {
-  return (
-    <Suspense fallback={
-      <div className="flex h-screen items-center justify-center bg-[#09090b] text-white">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
-      </div>
-    }>
-      <DashboardContent />
-    </Suspense>
-  );
+  redirect("/");
 }

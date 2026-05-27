@@ -3,25 +3,66 @@ import { prisma } from "@/lib/prisma";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = process.env.JWT_SECRET || "nexuscode_jwt_secret_cyber_security_key";
+const JWT_SECRET = process.env.JWT_SECRET || "codehub_jwt_secret_cyber_security_key";
 
 export async function GET(req: NextRequest) {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized: Please log in" }, { status: 401 });
+    let userId: string | null = null;
+    let decoded: any = null;
+
+    if (token) {
+      try {
+        decoded = jwt.verify(token, JWT_SECRET);
+        userId = decoded.userId;
+      } catch (err) {
+        // Token expired or invalid, treat as guest
+      }
     }
 
-    let decoded: any;
-    try {
-      decoded = jwt.verify(token, JWT_SECRET);
-    } catch (err) {
-      return NextResponse.json({ error: "Unauthorized: Session expired" }, { status: 401 });
-    }
+    if (!userId) {
+      // Fetch total problem counts on platform
+      const totalEasy = await prisma.problem.count({ where: { difficulty: "EASY" } });
+      const totalMedium = await prisma.problem.count({ where: { difficulty: "MEDIUM" } });
+      const totalHard = await prisma.problem.count({ where: { difficulty: "HARD" } });
 
-    const userId = decoded.userId;
+      const allBadges = await prisma.badge.findMany();
+      const badgesStatus = allBadges.map(b => ({
+        id: b.id,
+        name: b.name,
+        description: b.description,
+        icon: b.icon,
+        isUnlocked: false,
+      }));
+
+      return NextResponse.json({
+        user: {
+          name: "Guest User",
+          email: "guest@codehub.com",
+          xp: 0,
+          level: 1,
+          streak: 0,
+          createdAt: new Date().toISOString(),
+        },
+        stats: {
+          solved: {
+            total: 0,
+            easy: 0,
+            medium: 0,
+            hard: 0,
+            totalEasy,
+            totalMedium,
+            totalHard,
+          },
+          languageStats: [],
+          heatmap: {},
+        },
+        recentSubmissions: [],
+        badges: badgesStatus,
+      });
+    }
 
     // Fetch user details
     const user = await prisma.user.findUnique({

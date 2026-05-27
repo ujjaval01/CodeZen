@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "nexuscode_jwt_secret_cyber_security_key";
+const JWT_SECRET = process.env.JWT_SECRET || "codehub_jwt_secret_cyber_security_key";
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     // Print to the server terminal clearly for development
     console.log("\n=======================================================");
-    console.log(`🔑 NEXUSCODE SIGNUP VERIFICATION CODE FOR ${email.toUpperCase()}:`);
+    console.log(`🔑 CODEHUB SIGNUP VERIFICATION CODE FOR ${email.toUpperCase()}:`);
     console.log(`👉 OTP CODE: ${generatedOtp}`);
     console.log("=======================================================\n");
 

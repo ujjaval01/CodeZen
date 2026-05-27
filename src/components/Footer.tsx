@@ -27,7 +27,7 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <Terminal className="h-4 w-4 text-cyan-400" />
             <span className="text-xs font-semibold tracking-wider text-zinc-400">
-              NEXUS<span className="text-white">CODE</span>
+              CODE<span className="text-white">HUB</span>
             </span>
             <span className="text-[10px] text-zinc-600 border border-white/5 rounded-full px-2 py-0.5 bg-white/5">
               v1.0.0 Stable
@@ -71,7 +71,7 @@ export default function Footer() {
         <div className="my-6 h-[1px] w-full bg-white/5" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between text-[11px] text-zinc-600 gap-2">
-          <p>© 2026 NexusCode. Built for premium software engineering practice.</p>
+          <p>© 2026 CodeHub. Built for premium software engineering practice.</p>
           <div className="flex gap-4">
             <Link href="/terms" className="hover:text-zinc-400 transition-colors">Terms of Service</Link>
             <Link href="/privacy" className="hover:text-zinc-400 transition-colors">Privacy Policy</Link>

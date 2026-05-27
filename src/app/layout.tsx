@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NexusCode | Premium Coding Practice & Gamified DSA Platform",
+  title: "CodeHub | Premium Coding Practice & Gamified DSA Platform",
   description: "Accelerate your algorithm mastering. Compete in weekly challenges, solve beginner-to-advanced DSA problems, compile in 9+ languages, and level up your software engineering career.",
   keywords: ["leetcode clone", "dsa practice", "coding compiler", "competitive programming", "algorithms", "data structures", "interview prep"],
 };

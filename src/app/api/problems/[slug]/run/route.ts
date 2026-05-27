@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { executeCode } from "@/lib/compiler";
+import { getFullCode } from "@/lib/boilerplates";
 
 export async function POST(req: NextRequest, props: { params: Promise<{ slug: string }> }) {
   const params = await props.params;
@@ -11,8 +12,11 @@ export async function POST(req: NextRequest, props: { params: Promise<{ slug: st
       return NextResponse.json({ error: "Language and code are required fields" }, { status: 400 });
     }
 
+    // Merge solution code with backend driver code before execution
+    const mergedCode = getFullCode(language, slug, code);
+
     // Execute code
-    const result = await executeCode(language, code, input || "");
+    const result = await executeCode(language, mergedCode, input || "");
 
     return NextResponse.json({ result });
   } catch (e) {

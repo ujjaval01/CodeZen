@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { executeCode } from "@/lib/compiler";
+import { getFullCode } from "@/lib/boilerplates";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = process.env.JWT_SECRET || "nexuscode_jwt_secret_cyber_security_key";
+const JWT_SECRET = process.env.JWT_SECRET || "codehub_jwt_secret_cyber_security_key";
 
 export async function POST(req: NextRequest, props: { params: Promise<{ slug: string }> }) {
   const params = await props.params;
@@ -15,6 +16,9 @@ export async function POST(req: NextRequest, props: { params: Promise<{ slug: st
     if (!language || !code) {
       return NextResponse.json({ error: "Language and code are required fields" }, { status: 400 });
     }
+
+    // Merge solution code with backend driver code before execution
+    const mergedCode = getFullCode(language, slug, code);
 
     // Get problem and testcases
     const problem = await prisma.problem.findUnique({
@@ -55,7 +59,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ slug: st
       const tc = problem.testCases[i];
       testcaseIndex = i + 1;
 
-      const runResult = await executeCode(language, code, tc.input);
+      const runResult = await executeCode(language, mergedCode, tc.input);
 
       maxTime = Math.max(maxTime, runResult.executionTime);
       maxMemory = Math.max(maxMemory, runResult.memoryUsage);

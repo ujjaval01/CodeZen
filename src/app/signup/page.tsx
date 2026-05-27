@@ -124,7 +124,7 @@ function SignupContent() {
           </h2>
           <p className="text-sm text-zinc-400">
             {step === "form" 
-              ? "Join NexusCode and start solving DSA problems today"
+              ? "Join CodeHub and start solving DSA problems today"
               : `Enter the 6-digit OTP code sent to ${email}`}
           </p>
         </div>

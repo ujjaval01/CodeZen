@@ -56,24 +56,22 @@ export default function Navbar() {
                 </div>
               </div>
               <span className="text-lg font-bold tracking-wider text-white group-hover:text-cyan-400 transition-colors">
-                NEXUS<span className="text-gradient-indigo-cyan font-extrabold">CODE</span>
+                CODE<span className="text-gradient-indigo-cyan font-extrabold">HUB</span>
               </span>
             </Link>
 
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-1">
-              {user && (
-                <Link
-                  href="/dashboard"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    pathname === "/dashboard"
-                      ? "text-white bg-white/5"
-                      : "text-zinc-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  Dashboard
-                </Link>
-              )}
+              <Link
+                href="/"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname === "/"
+                    ? "text-white bg-white/5"
+                    : "text-zinc-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                Dashboard
+              </Link>
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -197,15 +195,13 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden border-t border-white/5 bg-[#09090b] px-4 py-3 space-y-2">
-          {user && (
-            <Link
-              href="/dashboard"
-              onClick={() => setIsOpen(false)}
-              className="block rounded-lg px-3 py-2 text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/5"
-            >
-              Dashboard
-            </Link>
-          )}
+          <Link
+            href="/"
+            onClick={() => setIsOpen(false)}
+            className="block rounded-lg px-3 py-2 text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/5"
+          >
+            Dashboard
+          </Link>
           {navLinks.map((link) => (
             <Link
               key={link.name}

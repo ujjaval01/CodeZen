@@ -193,7 +193,9 @@ async function runLocalSandbox(
       fs.writeFileSync(tempFilePath, code);
 
       compileCommand = `javac "${tempFilePath}"`;
-      execCommand = `java -cp "${runDir}" Solution < "${inputFilePath}"`;
+      const hasDriver = code.includes("class SolutionDriver");
+      const mainClass = hasDriver ? "SolutionDriver" : "Solution";
+      execCommand = `java -cp "${runDir}" ${mainClass} < "${inputFilePath}"`;
     } else if (lang === "kotlin") {
       runDir = path.join(scratchDir, `run_${runId}`);
       fs.mkdirSync(runDir, { recursive: true });
