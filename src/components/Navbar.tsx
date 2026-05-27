@@ -111,6 +111,18 @@ export default function Navbar() {
                   </div>
                 </div>
 
+                {user.isPremium ? (
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold shadow-[0_0_10px_rgba(99,102,241,0.2)]">
+                    <ShieldAlert className="h-3.5 w-3.5" />
+                    PREMIUM
+                  </div>
+                ) : (
+                  <Link href="/premium" className="px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 shadow-lg shadow-indigo-500/25 transition-all flex items-center gap-1.5">
+                    <Flame className="h-3.5 w-3.5" />
+                    Upgrade
+                  </Link>
+                )}
+
                 {/* Profile Dropdown */}
                 <div ref={dropdownRef} className="relative">
                   <button

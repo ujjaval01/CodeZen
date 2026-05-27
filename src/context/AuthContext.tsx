@@ -11,6 +11,7 @@ interface User {
   xp: number;
   level: number;
   streak: number;
+  isPremium?: boolean;
 }
 
 interface AuthContextType {

@@ -47,6 +47,7 @@ function AdminContent() {
 
   const [data, setData] = useState<AdminDashboardData | null>(null);
   const [problems, setProblems] = useState<ProblemItem[]>([]);
+  const [usersList, setUsersList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -76,16 +77,19 @@ function AdminContent() {
 
   const fetchAdminData = async () => {
     try {
-      const [analyticsRes, problemsRes] = await Promise.all([
+      const [analyticsRes, problemsRes, usersRes] = await Promise.all([
         fetch("/api/admin/analytics"),
-        fetch("/api/problems?limit=100")
+        fetch("/api/problems?limit=100"),
+        fetch("/api/admin/users")
       ]);
 
-      if (analyticsRes.ok && problemsRes.ok) {
+      if (analyticsRes.ok && problemsRes.ok && usersRes.ok) {
         const analyticsData = await analyticsRes.json();
         const problemsData = await problemsRes.json();
+        const usersData = await usersRes.json();
         setData(analyticsData);
         setProblems(problemsData.problems || []);
+        setUsersList(usersData.users || []);
       } else if (analyticsRes.status === 403) {
         setError("Access Denied: Admin privileges required.");
       } else {
@@ -207,6 +211,23 @@ function AdminContent() {
     } catch (e) {
       console.error(e);
       alert("Network error deleting problem.");
+    }
+  };
+
+  // Delete User
+  const handleDeleteUser = async (id: string) => {
+    if (!confirm("Are you sure you want to permanently delete this user?")) return;
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setUsersList(usersList.filter(u => u.id !== id));
+        fetchAdminData();
+      } else {
+        const json = await res.json();
+        alert(json.error || "Failed to delete user.");
+      }
+    } catch (e) {
+      alert("Network error deleting user.");
     }
   };
 
@@ -578,42 +599,37 @@ function AdminContent() {
           </div>
         </div>
 
-        {/* Recent Submissions Feed */}
+        {/* User Management Feed */}
         <div className="glass-panel p-6 rounded-2xl text-left space-y-4 lg:col-span-1">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5 border-b border-white/5 pb-3">
-            <Activity className="h-4.5 w-4.5 text-pink-400" />
-            Recent Platform Activity
+            <Users className="h-4.5 w-4.5 text-pink-400" />
+            User Management
           </h3>
 
           <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1">
-            {recentSubmissions.map((sub) => (
-              <div key={sub.id} className="rounded-xl border border-white/5 bg-white/[0.01] p-3 space-y-1.5 text-[11px] leading-relaxed">
+            {usersList.map((u) => (
+              <div key={u.id} className="rounded-xl border border-white/5 bg-white/[0.01] p-3 space-y-1.5 text-[11px] leading-relaxed">
                 <div className="flex justify-between items-center">
-                  <span className="font-bold text-white">{sub.userName}</span>
-                  <span className="text-[9px] text-zinc-500 font-semibold font-mono">
-                    {new Date(sub.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  <span className="font-bold text-white truncate max-w-[120px]" title={u.name}>{u.name}</span>
+                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${u.role === "ADMIN" ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" : "bg-white/5 text-zinc-400 border border-white/10"}`}>
+                    {u.role}
                   </span>
                 </div>
-                <p className="text-zinc-400 font-medium">
-                  Attempted: <span className="text-zinc-200 font-semibold">{sub.problemTitle}</span>
-                </p>
+                <p className="text-zinc-500 font-mono text-[10px] truncate">{u.email}</p>
                 <div className="flex justify-between items-center pt-1 border-t border-white/2">
-                  <span className="font-mono text-[10px] text-zinc-500">{sub.language}</span>
-                  <span className={`font-bold text-[9px] uppercase tracking-wide flex items-center gap-1 ${
-                    sub.status === "ACCEPTED" ? "text-emerald-400" : "text-red-400"
-                  }`}>
-                    {sub.status === "ACCEPTED" ? (
-                      <CheckCircle2 className="h-3 w-3" />
-                    ) : (
-                      <XCircle className="h-3 w-3" />
-                    )}
-                    {sub.status}
-                  </span>
+                  <span className="font-mono text-[10px] text-zinc-400">Level {u.level} ({u.xp} XP)</span>
+                  <button
+                    onClick={() => handleDeleteUser(u.id)}
+                    className="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-500/10 transition-colors"
+                    title="Delete User"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               </div>
             ))}
-            {recentSubmissions.length === 0 && (
-              <p className="text-xs text-zinc-500 font-mono py-4 text-center">No platform submissions logged yet.</p>
+            {usersList.length === 0 && (
+              <p className="text-xs text-zinc-500 font-mono py-4 text-center">No users found.</p>
             )}
           </div>
         </div>

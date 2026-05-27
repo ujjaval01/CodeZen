@@ -310,6 +310,25 @@ function WorkspaceContent() {
   const sampleCases = problem?.testCases?.filter((t: any) => t.isSample) || [];
   const tags = JSON.parse(problem?.tagsJson || "[]") as string[];
 
+  // PREMIUM LOCK
+  if (problem?.premium && !user?.isPremium) {
+    return (
+      <div className="flex-1 w-full bg-[#09090b] flex flex-col items-center justify-center text-center p-8 min-h-[calc(100vh-4rem)] relative z-10">
+        <div className="inline-flex items-center justify-center p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-3xl mb-6">
+          <ShieldAlert className="h-12 w-12 text-indigo-400" />
+        </div>
+        <h2 className="text-3xl font-extrabold text-white mb-4">Premium Problem</h2>
+        <p className="text-zinc-400 max-w-md mb-8">
+          This problem ({problem?.title}) is locked. Upgrade to Premium to unlock this challenge and gain access to our full library of FAANG interview algorithms.
+        </p>
+        <button onClick={() => router.push("/premium")} className="glow-btn-primary px-8 py-3 rounded-xl font-bold text-white shadow-lg shadow-indigo-500/30 transition-all flex items-center gap-2 mx-auto">
+          <Sparkles className="h-5 w-5" />
+          Unlock Premium Now
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 w-full bg-[#09090b] flex flex-col md:flex-row items-stretch border-t border-white/5 relative z-10 min-h-[calc(100vh-4rem)]">
       {/* LEFT PANEL: Problem Details, Editorial, Notes, AI */}

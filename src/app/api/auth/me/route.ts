@@ -37,6 +37,7 @@ export async function GET(req: NextRequest) {
         xp: true,
         level: true,
         streak: true,
+        isPremium: true,
       },
     });
 

@@ -76,6 +76,7 @@ export async function POST(req: NextRequest) {
         xp: user.xp,
         level: user.level,
         streak: newStreak,
+        isPremium: user.isPremium,
       },
     });
   } catch (e: any) {
