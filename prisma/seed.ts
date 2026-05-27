@@ -390,7 +390,7 @@ async function main() {
   pastEndDate.setHours(pastEndDate.getHours() + 2);
 
   const activeProblems = await prisma.problem.findMany({ select: { id: true }, take: 3 });
-  const problemIds = activeProblems.map(p => p.id);
+  const problemIds = activeProblems.map((p: any) => p.id);
 
   const contests = [
     {
